@@ -75,6 +75,14 @@ time, including Islands' tool-window and panel backgrounds. It deliberately decl
 `compileOnly`: IntelliJ 2025.1.2+ bundles Jewel, and shipping a private bridge/runtime copy is not
 supported by Jewel.
 
+| Islands Light | Islands Dark |
+| --- | --- |
+| ![Jewel motion panels using a light IntelliJ Islands palette](docs/jewel-islands-light.png) | ![Jewel motion panels using a dark IntelliJ Islands palette](docs/jewel-islands-dark.png) |
+
+These representative palettes are rendered by the desktop visual test through the Jewel adapter.
+Inside an IDE, the bridge supplies the exact `toolwindowBackground` and `panelBackground` values
+from the active look and feel.
+
 The build currently targets Compose Multiplatform 1.12 and Jewel 0.40. Jewel 0.40 artifacts are
 compiled for Java 25, so Jewel consumers and the full repository build require JDK 25; the core
 Compose Multiplatform artifact still targets JVM 11.
