@@ -41,6 +41,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.Measurable
@@ -405,12 +406,12 @@ private fun Modifier.grip(
                 val crossed = GripRegistry.at(press, with(density) { 5.dp.toPx() })
                 val targets = if (crossed.isEmpty()) listOf(entry) else crossed.distinctBy { it.state }
                 var dragging = false
+                var delta = Offset.Zero
                 val pointer: PointerId = down.id
                 while (true) {
                     val event = awaitPointerEvent()
                     val change: PointerInputChange = event.changes.firstOrNull { it.id == pointer } ?: break
-                    val current = origin + change.position
-                    val delta = current - press
+                    delta += change.positionChange()
                     if (!dragging && hypot(delta.x, delta.y) >= with(density) { 3.dp.toPx() }) {
                         dragging = true
                         targets.forEach { it.state.startDrag(it.group.room(it.state)) }
