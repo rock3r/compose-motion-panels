@@ -12,7 +12,7 @@ plugins {
 kotlin {
     android {
         namespace = "dev.letstri.motionpanels.demo.shared"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 23
         compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
         withJava()
@@ -22,19 +22,25 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":panels"))
-            implementation("org.jetbrains.compose.runtime:runtime:1.10.3")
-            implementation("org.jetbrains.compose.foundation:foundation:1.10.3")
-            implementation("org.jetbrains.compose.material3:material3:1.10.0-alpha05")
-            implementation("org.jetbrains.compose.ui:ui:1.10.3")
+            implementation("org.jetbrains.compose.runtime:runtime:1.12.0")
+            implementation("org.jetbrains.compose.foundation:foundation:1.12.0")
+            implementation("org.jetbrains.compose.material3:material3:1.12.0-alpha03")
+            implementation("org.jetbrains.compose.ui:ui:1.12.0")
         }
         named("desktopMain").dependencies {
             implementation(compose.desktop.currentOs)
         }
         named("desktopTest").dependencies {
             implementation(kotlin("test"))
+            implementation(project(":panels-jewel-standalone"))
             implementation("org.junit.jupiter:junit-jupiter:5.14.3")
             implementation("dev.sebastiano.spectre:spectre-core:0.4.0")
             implementation("dev.sebastiano.spectre:spectre-testing:0.4.0")
+            implementation("dev.sebastiano.spectre:spectre-recording:0.4.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.11.0")
+            runtimeOnly("dev.sebastiano.spectre:spectre-recording-linux:0.4.0")
+            runtimeOnly("dev.sebastiano.spectre:spectre-recording-macos:0.4.0")
+            runtimeOnly("dev.sebastiano.spectre:spectre-recording-windows:0.4.0")
         }
     }
 }
@@ -42,6 +48,10 @@ kotlin {
 tasks.named<Test>("desktopTest") {
     useJUnitPlatform()
     jvmArgs("-Djava.awt.headless=false", "-Dskiko.renderApi=SOFTWARE_COMPAT")
+    // Xvfb provides a display but not a desktop portal. An inherited desktop session bus can make
+    // Compose 1.12's synchronous system-theme lookup wait for that absent portal indefinitely.
+    environment("DBUS_SESSION_BUS_ADDRESS", "")
+    environment("XDG_RUNTIME_DIR", "")
 }
 
 tasks.register("spectreTest") {

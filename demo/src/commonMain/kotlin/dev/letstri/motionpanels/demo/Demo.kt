@@ -58,7 +58,11 @@ public fun MotionPanelsDemo() {
                         Text("Compose Motion Panels", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                         Text("Drag either seam—or their crossing. Focus a seam for keyboard controls.", color = Muted)
                         val fileSize = (files.size as? PanelSize.Fixed)?.value?.value?.toInt() ?: 0
-                        Text("Files: ${fileSize}dp", Modifier.testTag("files-size"), color = Muted)
+                        val terminalSize = (terminal.size as? PanelSize.Fixed)?.value?.value?.toInt() ?: 0
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Text("Files: ${fileSize}dp", Modifier.testTag("files-size"), color = Muted)
+                            Text("Terminal: ${terminalSize}dp", Modifier.testTag("terminal-size"), color = Muted)
+                        }
                     }
                     Button(onClick = { files.collapsed = !files.collapsed }, modifier = Modifier.testTag("toggle-files")) {
                         Text(if (files.collapsed) "Open files" else "Collapse files")

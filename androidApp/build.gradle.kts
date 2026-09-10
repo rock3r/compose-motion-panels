@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "dev.letstri.motionpanels.demo"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "dev.letstri.motionpanels.demo"

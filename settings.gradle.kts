@@ -14,4 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "compose-motion-panels"
-include(":panels", ":demo", ":androidApp")
+include(":panels", ":panels-jewel", ":panels-jewel-standalone", ":demo", ":androidApp")

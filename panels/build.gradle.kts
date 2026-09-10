@@ -5,13 +5,15 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("com.android.kotlin.multiplatform.library")
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
 }
+
+description = "Resizable and collapsible panels for Compose Multiplatform"
 
 kotlin {
     android {
         namespace = "dev.letstri.motionpanels"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 23
         compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
         withJava()
@@ -20,9 +22,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api("org.jetbrains.compose.runtime:runtime:1.10.3")
-            api("org.jetbrains.compose.foundation:foundation:1.10.3")
-            api("org.jetbrains.compose.ui:ui:1.10.3")
+            api("org.jetbrains.compose.runtime:runtime:1.12.0")
+            api("org.jetbrains.compose.foundation:foundation:1.12.0")
+            api("org.jetbrains.compose.ui:ui:1.12.0")
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
@@ -31,5 +33,6 @@ kotlin {
     }
 }
 
-group = "io.github.rock3r"
-version = "0.1.0-SNAPSHOT"
+mavenPublishing {
+    coordinates(group.toString(), "compose-motion-panels", version.toString())
+}
