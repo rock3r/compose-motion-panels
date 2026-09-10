@@ -32,6 +32,21 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.RegisterExtension
+import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
+import org.jetbrains.jewel.intui.standalone.theme.createDefaultTextStyle
+import org.jetbrains.jewel.intui.standalone.theme.createEditorTextStyle
+import org.jetbrains.jewel.intui.standalone.theme.darkThemeDefinition
+import org.jetbrains.jewel.intui.standalone.theme.default
+import org.jetbrains.jewel.intui.standalone.theme.lightThemeDefinition
+import org.jetbrains.jewel.intui.window.decoratedWindow
+import org.jetbrains.jewel.intui.window.styling.dark
+import org.jetbrains.jewel.intui.window.styling.lightWithLightHeader
+import org.jetbrains.jewel.ui.ComponentStyling
+import org.jetbrains.jewel.ui.component.Text
+import org.jetbrains.jewel.window.DecoratedWindow
+import org.jetbrains.jewel.window.TitleBar
+import org.jetbrains.jewel.window.styling.TitleBarStyle
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MotionPanelsSpectreTest {
@@ -127,6 +142,8 @@ class MotionPanelsSpectreTest {
 
 internal class DemoWindow(
     private val title: String = "motion-panels-spectre",
+    private val decorated: Boolean = false,
+    private val dark: Boolean = false,
     private val content: @Composable () -> Unit = { MotionPanelsDemo() },
 ) {
     private val windowRef = AtomicReference<ComposeWindow?>()
@@ -139,13 +156,42 @@ internal class DemoWindow(
             try {
                 application(exitProcessOnExit = false) {
                     exit = ::exitApplication
-                    Window(
-                        onCloseRequest = ::exitApplication,
-                        title = title,
-                        state = rememberWindowState(width = 800.dp, height = 600.dp),
-                    ) {
-                        windowRef.compareAndSet(null, window)
-                        content()
+                    val state = rememberWindowState(width = 800.dp, height = 600.dp)
+                    if (decorated) {
+                        val textStyle = JewelTheme.createDefaultTextStyle()
+                        val editorStyle = JewelTheme.createEditorTextStyle()
+                        val theme = if (dark) {
+                            JewelTheme.darkThemeDefinition(
+                                defaultTextStyle = textStyle,
+                                editorTextStyle = editorStyle,
+                            )
+                        } else {
+                            JewelTheme.lightThemeDefinition(
+                                defaultTextStyle = textStyle,
+                                editorTextStyle = editorStyle,
+                            )
+                        }
+                        IntUiTheme(
+                            theme = theme,
+                            styling = ComponentStyling.default().decoratedWindow(
+                                titleBarStyle = if (dark) {
+                                    TitleBarStyle.dark()
+                                } else {
+                                    TitleBarStyle.lightWithLightHeader()
+                                },
+                            ),
+                        ) {
+                            DecoratedWindow(onCloseRequest = ::exitApplication, title = title, state = state) {
+                                windowRef.compareAndSet(null, window)
+                                TitleBar { Text(title) }
+                                content()
+                            }
+                        }
+                    } else {
+                        Window(onCloseRequest = ::exitApplication, title = title, state = state) {
+                            windowRef.compareAndSet(null, window)
+                            content()
+                        }
                     }
                 }
             } catch (failure: Throwable) {

@@ -33,6 +33,7 @@ kotlin {
         named("desktopTest").dependencies {
             implementation(kotlin("test"))
             implementation(project(":panels-jewel-standalone"))
+            implementation("org.jetbrains.jewel:jewel-int-ui-decorated-window:0.40.0-262.10315.125")
             implementation("org.junit.jupiter:junit-jupiter:5.14.3")
             implementation("dev.sebastiano.spectre:spectre-core:0.4.0")
             implementation("dev.sebastiano.spectre:spectre-testing:0.4.0")
