@@ -213,17 +213,20 @@ internal class DemoWindow(
         val composeWindow = awaitWindow()
         repeat(200) {
             if (composeWindow.isShowing) {
-                destination.parentFile.mkdirs()
-                ImageIO.write(
-                    Robot().createScreenCapture(Rectangle(composeWindow.locationOnScreen, composeWindow.size)),
-                    "png",
-                    destination,
-                )
-                return
+                val image = Robot().createScreenCapture(Rectangle(composeWindow.locationOnScreen, composeWindow.size))
+                val firstPixel = image.getRGB(0, 0)
+                val painted = (0 until image.width step 20).any { x ->
+                    (0 until image.height step 20).any { y -> image.getRGB(x, y) != firstPixel }
+                }
+                if (painted) {
+                    destination.parentFile.mkdirs()
+                    ImageIO.write(image, "png", destination)
+                    return
+                }
             }
             Thread.sleep(50)
         }
-        error("Compose window '$title' did not become visible")
+        error("Compose window '$title' did not paint a frame")
     }
 
     fun stop() {
