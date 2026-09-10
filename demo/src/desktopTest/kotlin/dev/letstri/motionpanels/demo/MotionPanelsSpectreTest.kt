@@ -165,8 +165,19 @@ internal class DemoWindow(
 
     fun capture(destination: File) {
         val composeWindow = awaitWindow()
-        destination.parentFile.mkdirs()
-        ImageIO.write(Robot().createScreenCapture(Rectangle(composeWindow.locationOnScreen, composeWindow.size)), "png", destination)
+        repeat(200) {
+            if (composeWindow.isShowing) {
+                destination.parentFile.mkdirs()
+                ImageIO.write(
+                    Robot().createScreenCapture(Rectangle(composeWindow.locationOnScreen, composeWindow.size)),
+                    "png",
+                    destination,
+                )
+                return
+            }
+            Thread.sleep(50)
+        }
+        error("Compose window '$title' did not become visible")
     }
 
     fun stop() {

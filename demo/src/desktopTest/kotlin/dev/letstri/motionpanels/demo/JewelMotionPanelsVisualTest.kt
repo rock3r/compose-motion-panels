@@ -37,7 +37,6 @@ class JewelMotionPanelsVisualTest {
 
     @Test
     fun `Jewel adapter renders distinct Islands panel surfaces`() {
-        Thread.sleep(1_500)
         val screenshot = File("build/reports/spectre/jewel.png")
         window.capture(screenshot)
         assertTrue(screenshot.length() > 8 * 1024, "expected a non-empty Jewel screenshot")
