@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Compile Android and run state tests
+        run: ./gradlew :androidApp:assembleDebug :panels:desktopTest
+      - name: Run Spectre desktop E2E
+        run: xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew :demo:spectreTest
+      - name: Upload Spectre reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spectre-reports
+          path: demo/build/reports/
